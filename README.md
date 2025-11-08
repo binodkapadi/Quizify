@@ -4,9 +4,13 @@ Quizify is a full-stack web application that automatically generates interactive
 It combines AI-powered question generation, a Python and FastAPI backend, and a React, HTML, CSS frontend — all deployed in the Vercel(frontend) and Render(backend).
 
 ## DEPLOYMENT LINK:
-Deployment Live Link : https://binodkapadiquizify.vercel.app/
+Deployment Live Link(Frontend =>(Vercel)) : https://binodkapadiquizify.vercel.app/
+
+Deployment Live Link(Backend => (Render)) : https://quizify-binodkapadi.onrender.com
 
     https://binodkapadiquizify.vercel.app/
+
+    https://quizify-binodkapadi.onrender.com
 
 
 ## PROJECT SETUP
