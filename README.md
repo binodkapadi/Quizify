@@ -110,7 +110,7 @@ Note: (Replace <username> and <repo-name> with your actual GitHub info.)
          git push -u origin main
 
 
-## ===================Suppose After Pushing code You have updated code in the vs-code then for again push===========
+## Suppose After Pushing code You have updated code in the vs-code then for again push
 
 1)  Check your current branch
 
