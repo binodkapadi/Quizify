@@ -247,6 +247,101 @@ button:hover {
   background: linear-gradient(90deg, #4338ca, #4f46e5);
 }
 
+/* ================= Responsive ================= */
+@media (max-width: 600px) {
+
+  .form-card,
+  .quiz-card {
+    padding: 1.5rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+}
+
+
+/* ================= Feedback Text ================= */
+.answer-feedback {
+  margin-top: 1rem;
+  padding: 1rem 1.2rem;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #eef2ff, #dbeafe);
+  /* 🟦 soft blue background */
+  border-left: 4px solid #4f46e5;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.answer-feedback p {
+  margin: 0.3rem 0;
+  font-size: 0.95rem;
+  color: #374151;
+}
+
+.answer-feedback span {
+  font-weight: 600;
+}
+
+.answer-feedback p:last-child {
+  margin-top: 0.4rem;
+  color: #4f46e5;
+  /* soft purple tone */
+  font-style: Times;
+}
+
+
+/* ================= NotesInput Layout Enhancements ================= */
+
+.input-row {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.input-group {
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+}
+
+.input-group label {
+  margin-bottom: 0.4rem;
+  font-weight: 600;
+  color: #3b2f89;
+}
+
+.input-group select,
+.input-group input {
+  width: 100%;
+  padding: 0.8rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.input-group select:focus,
+.input-group input:focus {
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+  outline: none;
+}
+
+/* Responsive alignment for smaller screens */
+@media (max-width: 700px) {
+  .input-row {
+    flex-direction: column;
+  }
+
+  .input-group {
+    width: 100%;
+  }
+}
+
 /* ================= Footer ================= */
 .footer {
   text-align: center;
@@ -282,40 +377,4 @@ button:hover {
 .footer:hover {
   background: linear-gradient(135deg, #e0e7ff, #ede9fe);
   transition: all 0.3s ease;
-}
-
-/* ================= Responsive ================= */
-@media (max-width: 600px) {
-
-  .form-card,
-  .quiz-card {
-    padding: 1.5rem;
-  }
-
-  h1 {
-    font-size: 2rem;
-  }
-}
-
-
-/* ================= Feedback Text ================= */
-.answer-feedback {
-  margin-top: 1rem;
-  padding: 1rem 1.2rem;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #eef2ff, #dbeafe);
-  /* 🟦 soft blue background */
-  border-left: 4px solid #4f46e5;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
-  animation: fadeIn 0.3s ease-in-out;
-}
-
-.answer-feedback p {
-  margin: 0.3rem 0;
-  font-size: 0.95rem;
-  color: #374151;
-}
-
-.answer-feedback span {
-  font-weight: 600;
 }

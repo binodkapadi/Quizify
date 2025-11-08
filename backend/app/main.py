@@ -30,12 +30,13 @@ async def generate_quiz(request: Request):
     notes = data.get("notes")
     difficulty = data.get("difficulty", "medium")
     model = data.get("model", "gemini-2.0-flash")
+    num_questions = int(data.get("numQuestions", 5))
 
     # Add random seed to make every generation unique
     random_seed = random.randint(1000, 99999)
 
     try:
-        quiz = generate_quiz_from_notes(notes, difficulty, model, random_seed)  
+        quiz = generate_quiz_from_notes(notes, difficulty, model, num_questions, random_seed)  
         if not quiz:
             return {"error": "Quiz generation failed. Try again with clearer notes."}
         return {"quiz": quiz}

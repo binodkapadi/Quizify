@@ -16,24 +16,24 @@ genai.configure(api_key=GOOGLE_API_KEY)
 
 
 # added `seed` parameter for random variation
-def generate_quiz_from_notes(notes: str, difficulty: str, model: str, seed: int = None):
+def generate_quiz_from_notes(notes: str, difficulty: str, model: str, num_questions: int = 5, seed: int = None):
     """
-    Uses Google Gemini models to generate MCQs from the given notes.
-    Adds randomization via seed to make each request unique.
+    Uses Google Gemini models to generate MCQs from notes.
+    Now supports custom number of questions.
     """
 
-    # inject randomness context to avoid repetitive outputs
     seed_text = f"(Random context ID: {seed or random.randint(1, 100000)})"
 
     prompt = f"""
     You are a professional quiz generator.
-    Based on the following notes, create exactly 5 multiple-choice questions.
+    Based on the following notes, create exactly {num_questions} multiple-choice questions.
     Use this random context {seed_text} to ensure each generation is unique.
     
     Each question must include:
     - "question": the question text
     - "options": a list of 4 clear choices (A, B, C, D)
     - "answer": the correct choice text
+    - "explanation": a short 2-3 line summary explaining why the correct answer is correct
 
     Difficulty: {difficulty}
     Notes: {notes}
@@ -44,9 +44,11 @@ def generate_quiz_from_notes(notes: str, difficulty: str, model: str, seed: int 
         "question": "string",
         "options": ["A", "B", "C", "D"],
         "answer": "string"
+        "explanation": "string"
       }}
     ]
     """
+
 
     try:
         model_instance = genai.GenerativeModel(model)

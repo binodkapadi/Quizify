@@ -106,14 +106,20 @@ const QuizDisplay = ({ quiz, answers, onSelect, onSubmit, submitted, score }) =>
               <div className="answer-feedback">
                 <p>
                   🧍 You selected:{" "}
-                  <span style={{ color: isCorrect ? "green" : "red", fontWeight: "600" }}>
+                  <span style={{ color: isCorrect ? "green" : "red", fontWeight: "550" }}>
                     {selectedAnswer || "Not attempted"}
                   </span>
                 </p>
                 <p>
                   ✅ Correct answer:{" "}
-                  <span style={{ color: "green", fontWeight: "600" }}>{q.answer}</span>
+                  <span style={{ color: "green", fontWeight: "550" }}>{q.answer}</span>
                 </p>
+                {q.explanation && (
+                  <p>
+                    💡 <strong>Explanation:</strong>{" "}
+                    <span style={{ color: "#374151", fontWeight: "550" }}>{q.explanation}</span>
+                  </p>
+                )}
               </div>
             )}
           </div>

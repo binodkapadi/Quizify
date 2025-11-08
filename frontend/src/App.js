@@ -10,7 +10,7 @@ function App() {
   const [score, setScore] = useState(0);
   const [answers, setAnswers] = useState({});
 
-  const generateQuiz = async (notes, difficulty, model) => {
+  const generateQuiz = async (notes, difficulty, model, numQuestions) => {
     setLoading(true);
     setQuiz([]);
     setSubmitted(false);
@@ -25,7 +25,7 @@ function App() {
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ notes, difficulty, model }),
+          body: JSON.stringify({ notes, difficulty, model, numQuestions }),
         }
       );
 
