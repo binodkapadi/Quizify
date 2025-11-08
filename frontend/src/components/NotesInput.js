@@ -12,7 +12,7 @@ function NotesInput({ onGenerate }) {
     onGenerate(notes, difficulty, model, numQuestions);
   };
 
-  const isDisabled = !notes.trim(); // ✅ check if notes box is empty
+  const isDisabled = !notes.trim(); // check if notes box is empty
 
   return (
     <form onSubmit={handleSubmit} className="form-card">
@@ -53,7 +53,7 @@ function NotesInput({ onGenerate }) {
           </select>
         </div>
 
-        {/* 🆕 No. of Questions dropdown */}
+        {/* No. of Questions dropdown */}
         <div className="input-group">
           <label><strong>No. of Questions:</strong></label>
           <select
