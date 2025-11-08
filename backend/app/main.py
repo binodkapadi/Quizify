@@ -2,6 +2,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from app.utils.llm import generate_quiz_from_notes
 import random  #  added to generate random seed
+import os
 
 app = FastAPI(
     title="Notes to Quiz Generator API",
@@ -9,14 +10,11 @@ app = FastAPI(
     version="1.0.0"
 )
 
-origins = [
-    "https://binodkapadiquizify.vercel.app",  # your deployed frontend
-]
-
+frontend_url = os.getenv("https://binodkapadiquizify.vercel.app", "*")
 #  Allow frontend access
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,  # Replace with your frontend URL in production
+    allow_origins=[frontend_url],  # Replace with your frontend URL in production
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
