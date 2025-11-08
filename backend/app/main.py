@@ -9,10 +9,14 @@ app = FastAPI(
     version="1.0.0"
 )
 
+origins = [
+    "https://binodkapadiquizify.vercel.app",  # your deployed frontend
+]
+
 #  Allow frontend access
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://binodkapadiquizify.vercel.app"],  # Replace with your frontend URL in production
+    allow_origins=origins,  # Replace with your frontend URL in production
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
