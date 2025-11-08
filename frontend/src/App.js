@@ -20,7 +20,12 @@ function App() {
     try {
       const randomId = Math.floor(Math.random() * 100000);
 
-      const response = await fetch(
+      let baseUrl = process.env.REACT_APP_API_URL || "";
+      if (baseUrl.endsWith("/")) baseUrl = baseUrl.slice(0, -1);
+
+      const apiUrl = `${baseUrl}/generate-quiz?rand=${randomId}`.replace(/([^:]\/)\/+/g, "$1");
+
+      const response = await fetch(apiUrl,
         `${process.env.REACT_APP_API_URL}/generate-quiz?rand=${randomId}`,
         {
           method: "POST",
@@ -28,6 +33,10 @@ function App() {
           body: JSON.stringify({ notes, difficulty, model, numQuestions }),
         }
       );
+
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
+      }
 
       const data = await response.json();
       setQuiz(data.quiz || []);
