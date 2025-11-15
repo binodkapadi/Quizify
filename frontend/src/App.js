@@ -53,7 +53,7 @@ function App() {
 
   return (
     <div>
-      <h1>🧠 Notes to Quiz Generator</h1>
+      <h1>🧠 Notes & Prompt to Quiz Generator</h1>
 
       <NotesInput onGenerate={generateQuiz} />
 
