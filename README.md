@@ -57,6 +57,11 @@ Add .env file
      REACT_APP_API_URL=http://127.0.0.1:8000
 
 
+For Pdf Creation and download
+
+     npm install jspdf
+
+
 ## -----------------Run Locally----------------------------
 
 In separate terminals:
