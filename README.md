@@ -16,6 +16,7 @@ Deployment Live Link(Backend => (Render)) : https://quizify-binodkapadi.onrender
 ## PROJECT SETUP
 
 npm = node package manager
+
 npx = node package executer
 
 Step 1: Setup Folder Structure
