@@ -10,10 +10,16 @@ app = FastAPI(
     description="FastAPI backend powered by Google Gemini models",
     version="1.0.0"
 )
+
+origins = [
+  "https://binodkapadiquizify.vercel.app",
+  "http://localhost:3000",
+]
+
 #  Allow frontend access
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Replace with your frontend URL in production
+    allow_origins=origins,  # Replace with your frontend URL in production
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
