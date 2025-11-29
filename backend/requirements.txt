@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+pydantic
+google-generativeai
+python-dotenv
+requests
+python-multipart
+gunicorn
+PyPDF2
+python-docx
+python-pptx
+pytesseract
+Pillow

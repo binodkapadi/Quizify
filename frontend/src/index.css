@@ -1,0 +1,701 @@
+/* ================= Google Font ================= */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+/* ================= Base Layout ================= */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #e0e7ff, #f9fafb);
+  color: #333;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+}
+
+h1 {
+  text-align: center;
+  font-size: 2.5rem;
+  color: #3b2f89;
+  margin-bottom: 1rem;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* ================= Card Layout ================= */
+.form-card,
+.quiz-card {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  max-width: 700px;
+  width: 100%;
+  margin: 1rem auto;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-card:hover,
+.quiz-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+}
+
+/* ================= Inputs & Buttons ================= */
+textarea,
+select {
+  width: 100%;
+  padding: 0.8rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  resize: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+textarea:focus,
+select:focus {
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+  outline: none;
+}
+
+button {
+  background: linear-gradient(90deg, #4f46e5, #6366f1);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.9rem 1.2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.3s ease;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  background: linear-gradient(90deg, #4338ca, #4f46e5);
+}
+
+/* ================= Quiz Options ================= */
+.quiz-options li {
+  list-style: none;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 0.7rem;
+  margin: 0.4rem 0;
+  cursor: pointer;
+  transition: background-color 0.25s ease, border 0.25s ease;
+}
+
+/* Remove hover background so only clicked/selected state is highlighted */
+.quiz-options li:hover {
+  background-color: transparent;
+}
+
+/*  Active / Correct / Incorrect Option Styles */
+.selected {
+  background-color: #fef3c7;
+  border-color: #f59e0b;
+}
+
+.correct {
+  background-color: #d1fae5 !important;
+  border-color: #10b981 !important;
+}
+
+.incorrect {
+  background-color: #fee2e2 !important;
+  border-color: #ef4444 !important;
+}
+
+/* Soft highlight for correct answers (not selected) */
+.highlight-correct {
+  background-color: #ecfdf5;
+  border-color: #10b981;
+}
+
+/* Keep each question (with its options/answers) on the same PDF page */
+.quiz-question {
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+/* ================= Feedback Text ================= */
+.answer-feedback {
+  margin-top: 0.8rem;
+  font-size: 0.95rem;
+}
+
+/* ================= Score Box ================= */
+.score-box {
+  text-align: center;
+  margin-top: 2rem;
+  background: #f9fafb;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 5px 12px rgba(0, 0, 0, 0.1);
+}
+
+.score-box h3 {
+  color: #3b2f89;
+  margin-bottom: 1rem;
+}
+
+.score-box p,
+.score-box h4 {
+  margin: 0.4rem 0;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+/* Refined Score Section Colors and Weights */
+.score-box p span.label {
+  color: #3b2f89;
+  font-weight: 600;
+}
+
+.score-box p span.value {
+  color: #0891b2;
+  font-weight: 500;
+}
+
+.score-box h4 {
+  color: #2563eb;
+  font-weight: 600;
+  margin-top: 1rem;
+}
+
+.score-box h4 span.value {
+  color: #10b981;
+  font-weight: 500;
+  font-size: 1.3rem;
+}
+
+/* ================= Fullscreen Loader Overlay (with Blur Effect) ================= */
+.loader-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(6px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.loader-overlay .loader {
+  width: 65px;
+  height: 65px;
+  border: 6px solid rgba(229, 231, 235, 0.8);
+  border-top: 6px solid #4f46e5;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  box-shadow: 0 0 20px rgba(79, 70, 229, 0.3);
+}
+
+.loader-overlay .loading-text {
+  margin-top: 1.2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #4f46e5;
+  letter-spacing: 0.5px;
+}
+
+/* Animations */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+
+/* ================= Quiz Header ================= */
+.quiz-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.2rem;
+}
+
+.download-btn {
+  background: linear-gradient(90deg, #4f46e5, #6366f1);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.download-btn:hover {
+  transform: scale(1.05);
+  background: linear-gradient(90deg, #4338ca, #4f46e5);
+}
+
+/* ================= Responsive ================= */
+@media (max-width: 600px) {
+
+  .form-card,
+  .quiz-card {
+    padding: 1.5rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+}
+
+
+/* ================= Feedback Text ================= */
+.answer-feedback {
+  margin-top: 1rem;
+  padding: 1rem 1.2rem;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #eef2ff, #dbeafe);
+  border-left: 4px solid #4f46e5;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+  animation: none;
+}
+
+.answer-feedback p {
+  margin: 0.3rem 0;
+  font-size: 0.95rem;
+  color: #374151;
+}
+
+.answer-feedback span {
+  font-weight: 600;
+}
+
+.answer-feedback p:last-child {
+  margin-top: 0.4rem;
+  color: #4f46e5;
+  font-style: Times;
+}
+
+
+/* ================= NotesInput Layout Enhancements ================= */
+
+.input-row {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.input-group {
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+}
+
+.input-group label {
+  margin-bottom: 0.4rem;
+  font-weight: 600;
+  color: #3b2f89;
+}
+
+.input-group select,
+.input-group input {
+  width: 100%;
+  padding: 0.8rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.input-group select:focus,
+.input-group input:focus {
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+  outline: none;
+}
+
+/* ============== Upload Notes Section ============== */
+.upload-section {
+  margin-top: 1.5rem;
+  border-radius: 16px;
+}
+
+.upload-title {
+  margin: 0 0 0.4rem 0;
+  font-weight: 600;
+  color: #374151;
+  font-size: 0.95rem;
+}
+
+.upload-dropzone {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.2rem;
+  border-radius: 14px;
+  border: 2px dashed #d1d5db;
+  background-color: #f9fafb;
+  cursor: pointer;
+  position: relative;
+}
+
+.upload-dropzone:hover {
+  border-color: #10b981; /* bright green */
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+  transition: border-color 0.25s ease, background-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.upload-dropzone input[type="file"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.upload-cloud-icon {
+  font-size: 2rem;
+}
+
+.upload-texts {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.upload-main-text {
+  font-weight: 600;
+  color: #111827;
+  font-size: 0.98rem;
+}
+
+.upload-sub-text {
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+.upload-browse-btn {
+  background-color: #111827;
+  color: #ffffff;
+  border-radius: 999px;
+  padding: 0.5rem 1rem;
+  border: none;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.upload-browse-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.upload-selected {
+  margin-top: 0.8rem;
+  font-size: 0.9rem;
+}
+
+.upload-selected-title {
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+
+.upload-selected ul {
+  padding-left: 1.2rem;
+  margin: 0 0 0.5rem 0;
+}
+
+.upload-clear-btn {
+  background: #ef4444;
+  border-radius: 999px;
+  padding: 0.4rem 0.9rem;
+  font-size: 0.85rem;
+}
+
+.upload-error {
+  margin-top: 0.4rem;
+  font-size: 0.85rem;
+  color: #b91c1c;
+}
+
+.upload-disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* ================= Language Selector ================= */
+.language-select {
+  position: relative;
+  width: 100%;
+}
+
+.language-select-trigger {
+  width: 100%;
+  padding: 0.8rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background: #ffffff; 
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  color: #000000; 
+  font-weight: 400; 
+}
+
+.language-select-trigger:focus {
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+  outline: none;
+}
+
+/* Match hover behavior of normal select (no gradient / lift) */
+.language-select-trigger:hover {
+  background: #ffffff;
+  transform: none;
+}
+
+.language-selected-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #000000; 
+}
+
+.language-arrow {
+  margin-left: 0.5rem;
+  font-size: 0.8rem;
+}
+
+.language-dropdown {
+  position: absolute;
+  top: 105%;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  background-color: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.12);
+  padding: 0.4rem 0.4rem 0.5rem;
+}
+
+.language-search-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.35rem 0.4rem;
+  border-radius: 999px;
+  border: 1px solid #d1d5db;
+  margin-bottom: 0.4rem;
+}
+
+.language-search-icon {
+  font-size: 0.85rem;
+  color: #9ca3af;
+}
+
+.language-search {
+  border: none;
+  outline: none;
+  width: 100%;
+  font-size: 0.9rem;
+}
+
+.language-list {
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.language-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.6rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  border-radius: 6px;
+}
+
+.language-item:hover {
+  background-color: #f3f4ff;
+}
+
+.language-item-selected {
+  background-color: #eef2ff;
+  color: #4f46e5;
+  font-weight: 600;
+}
+
+.language-check {
+  font-size: 0.85rem;
+}
+
+.language-item-empty {
+  color: #6b7280;
+  cursor: default;
+}
+
+.language-select-disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Responsive alignment for smaller screens */
+@media (max-width: 700px) {
+  .input-row {
+    flex-direction: column;
+  }
+
+  .input-group {
+    width: 100%;
+  }
+}
+
+
+/* ================= Footer ================= */
+.footer {
+  text-align: center;
+  padding: 1.8rem 1rem;
+  margin-top: 3rem;
+  background: linear-gradient(135deg, #eef2ff, #f5f3ff);
+  border-top: 1px solid #e0e7ff;
+  font-family: 'Poppins', sans-serif;
+  box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.05);
+}
+
+.footer-socials {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 0.9rem;
+  flex-wrap: wrap;
+}
+
+.footer-socials a {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #898e06; /* olive similar to sample */
+  color: #ffffff;
+  text-decoration: none;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+  font-size: 1.2rem;
+}
+
+.footer-socials a:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
+  background-color: #a3aa12;
+}
+
+.footer-socials a:active {
+  transform: translateY(-1px) scale(0.98);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.18);
+}
+
+/* Brand colors on hover */
+.footer-socials a.facebook:hover {
+  background-color: #1877f2; /* Facebook blue */
+}
+
+.footer-socials a.instagram:hover {
+  background: radial-gradient(circle at 30% 30%, #fdf497 0, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285aeb 90%);
+}
+
+.footer-socials a.x:hover {
+  background-color: #000000; /* X / Twitter black */
+}
+
+.footer-socials a.linkedin:hover {
+  background-color: #0077b5;
+}
+
+.footer-socials a.github:hover {
+  background-color: #24292e;
+}
+
+.footer-socials a.discord:hover {
+  background-color: #5865f2;
+}
+
+.footer-socials a.whatsapp:hover {
+  background-color: #25d366;
+}
+
+.footer-socials a.telegram:hover {
+  background-color: #0088cc;
+}
+
+.footer-socials a.youtube:hover {
+  background-color: #ff0000;
+}
+
+.footer-text {
+  font-size: 1rem;
+  color: #ff0000;
+  margin: 0;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+
+.footer-text strong {
+  color: #4f46e5;
+  font-weight: 600;
+}
+
+.footer-subtext {
+  font-size: 0.95rem;
+  color: #ff0000;
+  margin-top: 0.3rem;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+}
+
+.footer:hover {
+  background: linear-gradient(135deg, #e0e7ff, #ede9fe);
+  transition: all 0.3s ease;
+}
+
+/* Footer mobile responsiveness */
+@media (max-width: 480px) {
+  .footer-socials a {
+    width: 34px;
+    height: 34px;
+    font-size: 1rem;
+  }
+
+  .footer-text {
+    font-size: 0.9rem;
+  }
+
+  .footer-subtext {
+    font-size: 0.85rem;
+  }
+}
