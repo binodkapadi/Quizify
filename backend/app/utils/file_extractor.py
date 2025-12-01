@@ -19,12 +19,10 @@ try:
     system = platform.system()
 
     if system == "Linux":
-        # ================================
-        #   IMPORTANT FOR RENDER.COM
-        #   Auto-detect Tesseract installed via apt
-        # ================================
         tesseract_path = shutil.which("tesseract")
-        if tesseract_path:
+        if not tesseract_path: 
+            tesseract_path = "/usr/bin/tesseract"
+        if os.path.exists(tesseract_path):
             pytesseract.pytesseract.tesseract_cmd = tesseract_path
             print(f"✔ Using Tesseract at: {tesseract_path}")
         else:
