@@ -13,15 +13,44 @@ const QuizDisplay = ({ quiz, answers, onSelect, onSubmit, submitted, score }) =>
   const downloadPDF = () => {
     if (!pdfRef.current) return;
 
+    const element = pdfRef.current;
+    const isMobile = window.innerWidth <= 768;
+    
+    // On mobile, set desktop width so PDF matches laptop output
+    const originalWidth = element.style.width;
+    if (isMobile) {
+      element.style.width = '700px';
+      element.style.maxWidth = '700px';
+    }
+
     const opt = {
       margin: 10,
-      filename: "quiz.pdf",
+      filename: submitted ? "quiz-with-answers.pdf" : "quiz.pdf",
       image: { type: "jpeg", quality: 0.98 },
       html2canvas: { scale: 2, useCORS: true },
       jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+      pagebreak: { 
+        mode: ['avoid-all', 'css'],
+        avoid: '.quiz-question'
+      }
     };
 
-    html2pdf().set(opt).from(pdfRef.current).save();
+    html2pdf()
+      .set(opt)
+      .from(element)
+      .save()
+      .then(() => {
+        if (isMobile) {
+          element.style.width = originalWidth;
+          element.style.maxWidth = '';
+        }
+      })
+      .catch(() => {
+        if (isMobile) {
+          element.style.width = originalWidth;
+          element.style.maxWidth = '';
+        }
+      });
   };
 
   return (
