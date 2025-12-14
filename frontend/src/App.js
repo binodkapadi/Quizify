@@ -29,9 +29,25 @@ function App() {
       );
 
       const data = await response.json();
-      setQuiz(data.quiz || []);
+      
+      if (data.error) {
+        // Show specific error message, especially for quota errors
+        if (data.error.includes("API limit") || data.error.includes("exceeds")) {
+          alert(`⚠️ ${data.error}\n\nPlease select a different model from the dropdown and try again.`);
+        } else {
+          alert(`Failed to generate quiz: ${data.error}`);
+        }
+        setQuiz([]);
+      } else {
+        setQuiz(data.quiz || []);
+        if (!data.quiz || data.quiz.length === 0) {
+          alert("Quiz generation returned empty results. Please try again with different notes or a different model.");
+        }
+      }
     } catch (err) {
-      alert("Failed to generate quiz. Please try again.");
+      console.error("Quiz generation error:", err);
+      alert(`Failed to generate quiz: ${err.message}\n\nPlease check your connection and try again.`);
+      setQuiz([]);
     } finally {
       setLoading(false);
     }

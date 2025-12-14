@@ -4,14 +4,14 @@ import LanguageSelector from "./LanguageSelector";
 function NotesInput({ onGenerate }) {
   const [notes, setNotes] = useState("");
   const [difficulty, setDifficulty] = useState("Easy");
-  const [model, setModel] = useState("gemini-2.0-flash");
+  const [model, setModel] = useState("gemini-flash-latest");
   const [numQuestions, setNumQuestions] = useState(5);
   const [language, setLanguage] = useState("English");
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState("");
-  const [manualMode, setManualMode] = useState(false); // true when user types notes themselves
-  const [fileNotes, setFileNotes] = useState(""); // extracted text from uploaded files (hidden from textarea)
+  const [manualMode, setManualMode] = useState(false); 
+  const [fileNotes, setFileNotes] = useState(""); 
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -201,10 +201,15 @@ function NotesInput({ onGenerate }) {
             onChange={(e) => setModel(e.target.value)}
             disabled={isDisabled}
           >
+            <option value="gemini-flash-latest">Gemini Flash Latest</option>
             <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
+            <option value="gemini-2.5-flash-lite-preview-09-2025">Gemini 2.5 Flash-Lite Preview</option>
             <option value="gemini-2.0-flash-lite">Gemini 2.0 Flash-Lite</option>
+            <option value="gemini-flash-lite-latest">Gemini Flash-Lite Latest</option>
             <option value="gemini-2.5-pro">Gemini 2.5 Pro</option>
             <option value="gemini-2.5-flash-lite">Gemini 2.5 Flash-Lite</option>
+            <option value="gemini-2.5-flash-preview-09-2025">Gemini 2.5 Flash Preview</option>
+            <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
           </select>
         </div>
 
