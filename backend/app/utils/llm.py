@@ -99,5 +99,22 @@ def generate_quiz_from_notes(
             return []
 
     except Exception as e:
-        print("❌ Gemini generation error:", e)
-        return []
+        error_str = str(e)
+        error_lower = error_str.lower()
+        
+        # Check if it's a quota/rate limit error (429)
+        if "429" in error_str or "quota" in error_lower or "rate limit" in error_lower or "limit exceeded" in error_lower:
+            print(f"❌ API limit for model '{model}' exceeds")
+            print(f"   Error details: {error_str[:200]}")
+            return []
+        
+        # Check if model doesn't exist or not supported (404)
+        elif "404" in error_str or "not found" in error_lower or "not supported" in error_lower:
+            print(f"❌ Model '{model}' not found or not supported for generateContent")
+            print(f"   Error details: {error_str[:200]}")
+            return []
+        
+        # Other errors
+        else:
+            print(f"❌ Gemini generation error for model '{model}': {error_str[:200]}")
+            return []

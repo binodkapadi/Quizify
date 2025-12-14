@@ -36,7 +36,7 @@ async def generate_quiz(request: Request):
     data = await request.json()
     notes = data.get("notes")
     difficulty = data.get("difficulty", "medium")
-    model = data.get("model", "gemini-2.0-flash")
+    model = data.get("model", "gemini-flash-latest")
     num_questions = int(data.get("numQuestions", 5))
     language = data.get("language", "English")
 
@@ -46,9 +46,14 @@ async def generate_quiz(request: Request):
     try:
         quiz = generate_quiz_from_notes(notes, difficulty, model, num_questions, random_seed, language)  
         if not quiz:
-            return {"error": "Quiz generation failed. Try again with clearer notes."}
+            # Check if it's a quota error by examining the error logs
+            # The llm.py function will print the error, but we need to return a user-friendly message
+            return {"error": f"API limit for model '{model}' exceeds. Please try a different model or wait and try again later."}
         return {"quiz": quiz}
     except Exception as e:
+        error_str = str(e).lower()
+        if "429" in str(e) or "quota" in error_str or "rate limit" in error_str:
+            return {"error": f"API limit for model '{model}' exceeds. Please try a different model or wait and try again later."}
         print("❌ Error generating quiz:", e)
         return {"error": str(e)}
 
