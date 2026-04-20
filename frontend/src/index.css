@@ -88,9 +88,29 @@ button:hover {
   transition: background-color 0.25s ease, border 0.25s ease;
 }
 
-/* Remove hover background so only clicked/selected state is highlighted */
+/* Hover should never override clicked/selected states */
 .quiz-options li:hover {
-  background-color: transparent;
+  background-color: #f8fafc;
+}
+
+.quiz-options li.selected:hover {
+  background-color: #fef3c7;
+  border-color: #f59e0b;
+}
+
+.quiz-options li.correct:hover {
+  background-color: #d1fae5;
+  border-color: #10b981;
+}
+
+.quiz-options li.incorrect:hover {
+  background-color: #fee2e2;
+  border-color: #ef4444;
+}
+
+.quiz-options li.highlight-correct:hover {
+  background-color: #ecfdf5;
+  border-color: #10b981;
 }
 
 /*  Active / Correct / Incorrect Option Styles */
