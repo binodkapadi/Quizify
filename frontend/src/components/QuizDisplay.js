@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import html2pdf from "html2pdf.js";
 
-const QuizDisplay = ({ quiz, answers, onSelect, onSubmit, submitted, score }) => {
+const QuizDisplay = ({ quiz, answers, onSelect, onSubmit, submitted, score, onDownloaded }) => {
   const pdfRef = useRef(null);
   const totalQuestions = quiz.length;
   const attempted = Object.keys(answers).length;
@@ -40,6 +40,7 @@ const QuizDisplay = ({ quiz, answers, onSelect, onSubmit, submitted, score }) =>
       .from(element)
       .save()
       .then(() => {
+        if (onDownloaded) onDownloaded();
         if (isMobile) {
           element.style.width = originalWidth;
           element.style.maxWidth = '';

@@ -1,7 +1,9 @@
 import { useState } from "react";
 import LanguageSelector from "./LanguageSelector";
+import { getApiBaseUrl } from "../utils/api";
 
-function NotesInput({ onGenerate }) {
+function NotesInput({ onGenerate, isAuthenticated, onRequireAuth }) {
+  const apiBaseUrl = getApiBaseUrl();
   const [notes, setNotes] = useState("");
   const [difficulty, setDifficulty] = useState("Easy");
   const [model, setModel] = useState("gemini-flash-latest");
@@ -15,6 +17,10 @@ function NotesInput({ onGenerate }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!isAuthenticated) {
+      onRequireAuth();
+      return;
+    }
 
     const effectiveNotes = manualMode ? notes : fileNotes;
     if (!effectiveNotes.trim()) {
@@ -31,6 +37,10 @@ function NotesInput({ onGenerate }) {
   const uploadDisabled = manualMode; // user is typing notes -> disable upload box
 
   const handleFileChange = async (e) => {
+    if (!isAuthenticated) {
+      onRequireAuth();
+      return;
+    }
     const files = Array.from(e.target.files || []);
     if (!files.length) return;
   
@@ -58,7 +68,7 @@ function NotesInput({ onGenerate }) {
       files.forEach((file) => formData.append("files", file));
   
       const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/extract-notes`,
+        `${apiBaseUrl}/extract-notes`,
         {
           method: "POST",
           body: formData,
@@ -100,7 +110,14 @@ function NotesInput({ onGenerate }) {
       <label><strong>Paste your notes below:</strong></label>
       <textarea
         value={notes}
+        onFocus={() => {
+          if (!isAuthenticated) onRequireAuth();
+        }}
         onChange={(e) => {
+          if (!isAuthenticated) {
+            onRequireAuth();
+            return;
+          }
           const value = e.target.value;
           setNotes(value);
 

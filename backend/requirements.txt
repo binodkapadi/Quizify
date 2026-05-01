@@ -11,3 +11,5 @@ python-docx
 python-pptx
 pytesseract
 Pillow
+email-validator
+pymongo
