@@ -8,6 +8,10 @@ from email.mime.multipart import MIMEMultipart
 from datetime import datetime
 
 
+def _is_truthy(value: str) -> bool:
+    return (value or "").strip().lower() in {"1", "true", "yes", "on"}
+
+
 def send_otp_email(recipient_email: str, otp_code: str, full_name: str) -> bool:
     """
     Send OTP verification email to the user
@@ -27,6 +31,7 @@ def send_otp_email(recipient_email: str, otp_code: str, full_name: str) -> bool:
     SMTP_PASSWORD = os.getenv("SMTP_PASSWORD", "")
     SENDER_EMAIL = os.getenv("SENDER_EMAIL") or os.getenv("SMTP_FROM") or SMTP_USER
     SENDER_NAME = os.getenv("SENDER_NAME", "Quizify")
+    SMTP_SECURE = os.getenv("SMTP_SECURE", "")
     
     # Check if SMTP is configured
     if not SMTP_HOST or not SMTP_USER or not SMTP_PASSWORD:
@@ -107,10 +112,22 @@ Quizify Team
         message.attach(part2)
         
         # Send email
-        with smtplib.SMTP(SMTP_HOST, int(SMTP_PORT)) as server:
-            server.starttls()
-            server.login(SMTP_USER, SMTP_PASSWORD)
-            server.sendmail(SENDER_EMAIL, recipient_email, message.as_string())
+        port = int(SMTP_PORT)
+        force_ssl = _is_truthy(SMTP_SECURE) or port == 465
+        timeout = float(os.getenv("SMTP_TIMEOUT_SECONDS", "15"))
+
+        if force_ssl:
+            with smtplib.SMTP_SSL(SMTP_HOST, port, timeout=timeout) as server:
+                server.ehlo()
+                server.login(SMTP_USER, SMTP_PASSWORD)
+                server.sendmail(SENDER_EMAIL, recipient_email, message.as_string())
+        else:
+            with smtplib.SMTP(SMTP_HOST, port, timeout=timeout) as server:
+                server.ehlo()
+                server.starttls()
+                server.ehlo()
+                server.login(SMTP_USER, SMTP_PASSWORD)
+                server.sendmail(SENDER_EMAIL, recipient_email, message.as_string())
         
         print(f"✅ OTP email sent to {recipient_email}")
         return True
@@ -131,6 +148,7 @@ def send_password_reset_email(recipient_email: str, otp_code: str, full_name: st
     SMTP_PASSWORD = os.getenv("SMTP_PASSWORD", "")
     SENDER_EMAIL = os.getenv("SENDER_EMAIL") or os.getenv("SMTP_FROM") or SMTP_USER
     SENDER_NAME = os.getenv("SENDER_NAME", "Quizify")
+    SMTP_SECURE = os.getenv("SMTP_SECURE", "")
 
     if not SMTP_HOST or not SMTP_USER or not SMTP_PASSWORD:
         print(
@@ -190,10 +208,22 @@ Quizify Team
         message.attach(MIMEText(text_content, "plain"))
         message.attach(MIMEText(html_content, "html"))
 
-        with smtplib.SMTP(SMTP_HOST, int(SMTP_PORT)) as server:
-            server.starttls()
-            server.login(SMTP_USER, SMTP_PASSWORD)
-            server.sendmail(SENDER_EMAIL, recipient_email, message.as_string())
+        port = int(SMTP_PORT)
+        force_ssl = _is_truthy(SMTP_SECURE) or port == 465
+        timeout = float(os.getenv("SMTP_TIMEOUT_SECONDS", "15"))
+
+        if force_ssl:
+            with smtplib.SMTP_SSL(SMTP_HOST, port, timeout=timeout) as server:
+                server.ehlo()
+                server.login(SMTP_USER, SMTP_PASSWORD)
+                server.sendmail(SENDER_EMAIL, recipient_email, message.as_string())
+        else:
+            with smtplib.SMTP(SMTP_HOST, port, timeout=timeout) as server:
+                server.ehlo()
+                server.starttls()
+                server.ehlo()
+                server.login(SMTP_USER, SMTP_PASSWORD)
+                server.sendmail(SENDER_EMAIL, recipient_email, message.as_string())
 
         print(f"✅ Password reset OTP email sent to {recipient_email}")
         return True

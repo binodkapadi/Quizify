@@ -72,10 +72,6 @@ function AuthModal({ open, onClose, onAuthenticated }) {
   };
 
   const apiBaseUrl = useMemo(() => getApiBaseUrl(), []);
-  const allowDebugOtp = useMemo(() => {
-    const host = window.location.hostname;
-    return host === "localhost" || host === "127.0.0.1";
-  }, []);
 
   // Password strength rules
   const passwordRules = useMemo(() => validatePassword(form.password), [form.password]);
@@ -217,7 +213,7 @@ function AuthModal({ open, onClose, onAuthenticated }) {
       if (!response.ok) throw new Error(data.detail || "Failed to send OTP");
       
       // Store debug OTP for development (remove in production!)
-      if (allowDebugOtp && data.debug_otp) {
+      if (data.debug_otp) {
         setDebugOtp(data.debug_otp);
         console.log("🔐 Development OTP:", data.debug_otp);
       }
@@ -289,7 +285,7 @@ function AuthModal({ open, onClose, onAuthenticated }) {
       const data = await response.json();
       if (!response.ok) throw new Error(data.detail || "Failed to resend OTP");
       
-      if (allowDebugOtp && data.debug_otp) {
+      if (data.debug_otp) {
         setDebugOtp(data.debug_otp);
         console.log("🔐 New Development OTP:", data.debug_otp);
       }
@@ -368,7 +364,7 @@ function AuthModal({ open, onClose, onAuthenticated }) {
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.detail || "Failed to request reset");
-      if (allowDebugOtp && data.debug_otp) {
+      if (data.debug_otp) {
         setDebugOtp(data.debug_otp);
       }
       setSuccess("Verification code sent to your email.");

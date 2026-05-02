@@ -53,6 +53,8 @@ def is_debug_otp_enabled() -> bool:
     """
     if os.getenv("ENABLE_DEBUG_OTP", "").strip().lower() in {"1", "true", "yes", "on"}:
         return True
+    if os.getenv("AUTO_ENABLE_DEBUG_OTP", "").strip().lower() not in {"1", "true", "yes", "on"}:
+        return False
 
     env_candidates = [
         os.getenv("APP_ENV", ""),
