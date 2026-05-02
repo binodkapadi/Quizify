@@ -13,3 +13,4 @@ pytesseract
 Pillow
 email-validator
 pymongo
+certifi

@@ -3,6 +3,7 @@ import os
 import secrets
 from datetime import datetime
 
+import certifi
 from bson import ObjectId
 from fastapi import HTTPException
 from pymongo import ASCENDING, DESCENDING, MongoClient
@@ -31,7 +32,14 @@ def get_db_conn():
     if not MONGO_DB_NAME:
         raise HTTPException(status_code=500, detail="Missing MONGODB_DB_NAME in environment")
     if _mongo_client is None:
-        _mongo_client = MongoClient(MONGO_URI)
+        opts = {"tlsCAFile": certifi.where()}
+        if not (
+            MONGO_URI.startswith("mongodb+srv://")
+            or "tls=true" in MONGO_URI.lower()
+            or "ssl=true" in MONGO_URI.lower()
+        ):
+            opts = {}
+        _mongo_client = MongoClient(MONGO_URI, **opts)
     return _mongo_client[MONGO_DB_NAME]
 
 
