@@ -16,6 +16,7 @@ function App() {
   const [leaders, setLeaders] = useState([]);
   const [showProfile, setShowProfile] = useState(false);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
+  const [notesInputKey, setNotesInputKey] = useState(0);
   const profileMenuRef = useRef(null);
 
   const authToken = localStorage.getItem("auth_token");
@@ -179,6 +180,15 @@ function App() {
     setHistory([]);
     setShowProfile(false);
     setShowLeaderboard(false);
+    // Clear any quiz-related state and reset the form back to homepage defaults
+    setQuiz([]);
+    setLoading(false);
+    setSubmitted(false);
+    setScore(0);
+    setAnswers({});
+    setNotesInputKey((k) => k + 1);
+    window.history.replaceState({}, "", "/");
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
@@ -311,6 +321,7 @@ function App() {
       <h1>🧠 Notes to Quiz Generator</h1>
 
       <NotesInput
+        key={notesInputKey}
         onGenerate={generateQuiz}
         isAuthenticated={isAuthenticated}
         onRequireAuth={() => setAuthOpen(true)}

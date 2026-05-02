@@ -22,15 +22,19 @@ def send_otp_email(recipient_email: str, otp_code: str, full_name: str) -> bool:
     """
     # Get email configuration from environment variables
     SMTP_HOST = os.getenv("SMTP_HOST", "")
-    SMTP_PORT = os.getenv("SMTP_PORT", "587")
+    SMTP_PORT = os.getenv("SMTP_PORT", "")
     SMTP_USER = os.getenv("SMTP_USER", "")
     SMTP_PASSWORD = os.getenv("SMTP_PASSWORD", "")
-    SENDER_EMAIL = os.getenv("SENDER_EMAIL", SMTP_USER)
+    SENDER_EMAIL = os.getenv("SENDER_EMAIL") or os.getenv("SMTP_FROM") or SMTP_USER
     SENDER_NAME = os.getenv("SENDER_NAME", "Quizify")
     
     # Check if SMTP is configured
     if not SMTP_HOST or not SMTP_USER or not SMTP_PASSWORD:
-        print(f"⚠️ SMTP not configured. OTP for {recipient_email}: {otp_code}")
+        print(
+            "⚠️ SMTP not configured. "
+            f"host_set={bool(SMTP_HOST)} user_set={bool(SMTP_USER)} password_set={bool(SMTP_PASSWORD)}. "
+            f"OTP for {recipient_email}: {otp_code}"
+        )
         # For development: print OTP to console
         return False
     
@@ -125,11 +129,15 @@ def send_password_reset_email(recipient_email: str, otp_code: str, full_name: st
     SMTP_PORT = os.getenv("SMTP_PORT", "587")
     SMTP_USER = os.getenv("SMTP_USER", "")
     SMTP_PASSWORD = os.getenv("SMTP_PASSWORD", "")
-    SENDER_EMAIL = os.getenv("SENDER_EMAIL", SMTP_USER)
+    SENDER_EMAIL = os.getenv("SENDER_EMAIL") or os.getenv("SMTP_FROM") or SMTP_USER
     SENDER_NAME = os.getenv("SENDER_NAME", "Quizify")
 
     if not SMTP_HOST or not SMTP_USER or not SMTP_PASSWORD:
-        print(f"⚠️ SMTP not configured. Password reset OTP for {recipient_email}: {otp_code}")
+        print(
+            "⚠️ SMTP not configured. "
+            f"host_set={bool(SMTP_HOST)} user_set={bool(SMTP_USER)} password_set={bool(SMTP_PASSWORD)}. "
+            f"Password reset OTP for {recipient_email}: {otp_code}"
+        )
         return False
 
     try:

@@ -46,6 +46,24 @@ app = FastAPI(
     version="1.0.0"
 )
 
+def is_debug_otp_enabled() -> bool:
+    """
+    Allow debug OTP fallback only in explicit local/dev environments.
+    In production this must remain disabled for security.
+    """
+    if os.getenv("ENABLE_DEBUG_OTP", "").strip().lower() in {"1", "true", "yes", "on"}:
+        return True
+
+    env_candidates = [
+        os.getenv("APP_ENV", ""),
+        os.getenv("ENVIRONMENT", ""),
+        os.getenv("PYTHON_ENV", ""),
+        os.getenv("NODE_ENV", ""),
+    ]
+    normalized = {value.strip().lower() for value in env_candidates if value}
+    return bool(normalized.intersection({"dev", "development", "local", "test"}))
+
+
 def get_frontend_url() -> str:
     return (os.getenv("FRONTEND_URL") or "http://localhost:3000").rstrip("/")
 
@@ -157,13 +175,17 @@ def signup_send_otp(payload: SignupSendOtpRequest):
     email_sent = send_otp_email(email, otp_code, payload.full_name.strip())
     
     if not email_sent:
-        # For development: return OTP in response (remove in production!)
-        return {
-            "message": "OTP sent to your email",
-            "email": email,
-            "debug_otp": otp_code,  # ⚠️ Remove this in production!
-            "expires_in": "10 minutes"
-        }
+        if is_debug_otp_enabled():
+            return {
+                "message": "OTP sent to your email",
+                "email": email,
+                "debug_otp": otp_code,
+                "expires_in": "10 minutes"
+            }
+        raise HTTPException(
+            status_code=503,
+            detail="Unable to send OTP email right now. Please try again in a moment."
+        )
     
     return {
         "message": "OTP sent to your email",
@@ -215,12 +237,17 @@ def signup_resend_otp(payload: ResendOtpRequest):
     email_sent = send_otp_email(email, new_otp, full_name)
     
     if not email_sent:
-        return {
-            "message": "OTP resent to your email",
-            "email": email,
-            "debug_otp": new_otp,  # ⚠️ Remove in production!
-            "expires_in": "10 minutes"
-        }
+        if is_debug_otp_enabled():
+            return {
+                "message": "OTP resent to your email",
+                "email": email,
+                "debug_otp": new_otp,
+                "expires_in": "10 minutes"
+            }
+        raise HTTPException(
+            status_code=503,
+            detail="Unable to send OTP email right now. Please try again in a moment."
+        )
     
     return {
         "message": "OTP resent to your email",
@@ -516,7 +543,12 @@ def request_password_reset(payload: PasswordResetRequest):
 
     email_sent = send_password_reset_email(email, token, full_name)
     if not email_sent:
-        return {"message": "Verification code sent to your email.", "debug_otp": token}
+        if is_debug_otp_enabled():
+            return {"message": "Verification code sent to your email.", "debug_otp": token}
+        raise HTTPException(
+            status_code=503,
+            detail="Unable to send verification code email right now. Please try again in a moment."
+        )
     return {"message": "Verification code sent to your email."}
 
 

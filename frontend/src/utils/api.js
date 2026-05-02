@@ -24,11 +24,15 @@ export function getApiBaseCandidates() {
   const protocol = window.location.protocol;
   const host = window.location.hostname;
   const candidates = [];
+  const isBrowserLocal = isLocalHost(host);
 
   if (envUrl) candidates.push(envUrl);
-  candidates.push(`${protocol}//${host}:8000`);
-  candidates.push(`${protocol}//localhost:8000`);
-  candidates.push(`${protocol}//127.0.0.1:8000`);
+  // Only try :8000 / localhost fallbacks while developing locally.
+  if (isBrowserLocal) {
+    candidates.push(`${protocol}//${host}:8000`);
+    candidates.push(`${protocol}//localhost:8000`);
+    candidates.push(`${protocol}//127.0.0.1:8000`);
+  }
 
   return [...new Set(candidates)];
 }
@@ -37,6 +41,12 @@ export async function apiFetch(path, options = {}) {
   const normalizedPath = path.startsWith("/") ? path : `/${path}`;
   const candidates = getApiBaseCandidates();
   let lastError = null;
+
+  if (!candidates.length) {
+    throw new Error(
+      "API URL is not configured. Set REACT_APP_API_URL in your deployment environment variables."
+    );
+  }
 
   for (const base of candidates) {
     try {
@@ -47,5 +57,11 @@ export async function apiFetch(path, options = {}) {
     }
   }
 
+  const host = window.location.hostname;
+  if (!isLocalHost(host) && !(process.env.REACT_APP_API_URL || "").trim()) {
+    throw new Error(
+      "Cannot reach backend API. In Vercel, set REACT_APP_API_URL to your Render backend URL and redeploy."
+    );
+  }
   throw lastError || new Error("Failed to fetch");
 }
