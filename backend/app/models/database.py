@@ -14,6 +14,24 @@ MONGO_DB_NAME = (os.getenv("MONGODB_DB_NAME") or "").strip()
 _mongo_client = None
 
 
+def _mongo_client_kwargs() -> dict:
+    """TLS options for Atlas / mongodb+srv (Render/Docker often need explicit CA + OCSP off)."""
+    uri = MONGO_URI
+    uses_tls = (
+        uri.startswith("mongodb+srv://")
+        or "tls=true" in uri.lower()
+        or "ssl=true" in uri.lower()
+    )
+    if not uses_tls:
+        return {}
+    kwargs: dict = {"tlsCAFile": certifi.where()}
+    # Outbound OCSP from containers sometimes fails; Atlas still validates server cert.
+    disable_ocsp = (os.getenv("MONGODB_TLS_DISABLE_OCSP") or "1").strip().lower()
+    if disable_ocsp not in ("0", "false", "no"):
+        kwargs["tlsDisableOCSPEndpointCheck"] = True
+    return kwargs
+
+
 def is_valid_password(password: str) -> bool:
     if len(password) < 8:
         return False
@@ -32,14 +50,7 @@ def get_db_conn():
     if not MONGO_DB_NAME:
         raise HTTPException(status_code=500, detail="Missing MONGODB_DB_NAME in environment")
     if _mongo_client is None:
-        opts = {"tlsCAFile": certifi.where()}
-        if not (
-            MONGO_URI.startswith("mongodb+srv://")
-            or "tls=true" in MONGO_URI.lower()
-            or "ssl=true" in MONGO_URI.lower()
-        ):
-            opts = {}
-        _mongo_client = MongoClient(MONGO_URI, **opts)
+        _mongo_client = MongoClient(MONGO_URI, **_mongo_client_kwargs())
     return _mongo_client[MONGO_DB_NAME]
 
 

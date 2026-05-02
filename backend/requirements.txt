@@ -12,5 +12,6 @@ python-pptx
 pytesseract
 Pillow
 email-validator
-pymongo
+pymongo>=4.7
+dnspython>=2.6.0
 certifi
