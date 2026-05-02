@@ -22,7 +22,7 @@ def send_otp_email(recipient_email: str, otp_code: str, full_name: str) -> bool:
     """
     # Get email configuration from environment variables
     SMTP_HOST = os.getenv("SMTP_HOST", "")
-    SMTP_PORT = os.getenv("SMTP_PORT", "")
+    SMTP_PORT = os.getenv("SMTP_PORT", "587")
     SMTP_USER = os.getenv("SMTP_USER", "")
     SMTP_PASSWORD = os.getenv("SMTP_PASSWORD", "")
     SENDER_EMAIL = os.getenv("SENDER_EMAIL") or os.getenv("SMTP_FROM") or SMTP_USER
