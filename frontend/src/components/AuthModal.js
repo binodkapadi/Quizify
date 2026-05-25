@@ -3,9 +3,30 @@ import { apiFetch } from "../utils/api";
 import { getApiBaseUrl } from "../utils/api";
 
 // Validation helpers
+const ALLOWED_EMAIL_DOMAINS = [
+  "gmail.com",
+  "outlook.com",
+  "hotmail.com",
+  "live.com",
+  "yahoo.com",
+  "icloud.com",
+  "proton.me",
+  "protonmail.com",
+  "aol.com",
+  "zoho.com",
+];
+
 const validateEmail = (email) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
+};
+
+const validateEmailDomain = (email) => {
+  if (!email) return false;
+  const parts = email.split("@");
+  if (parts.length < 2) return false;
+  const domain = parts[parts.length - 1].toLowerCase();
+  return ALLOWED_EMAIL_DOMAINS.includes(domain);
 };
 
 const validatePassword = (password) => {
@@ -84,6 +105,7 @@ function AuthModal({ open, onClose, onAuthenticated }) {
     return (
       form.fullName.trim() !== "" &&
       validateEmail(form.email) &&
+      validateEmailDomain(form.email) &&
       isPasswordValid(passwordRules) &&
       form.confirmPassword.trim() !== "" &&
       form.password === form.confirmPassword
@@ -98,8 +120,14 @@ function AuthModal({ open, onClose, onAuthenticated }) {
 
   useEffect(() => {
     // Email validation on blur
-    if (mode !== "login" && touched.email && form.email && !validateEmail(form.email)) {
-      setEmailError("Please enter a valid email address");
+    if (mode !== "login" && touched.email && form.email) {
+      if (!validateEmail(form.email)) {
+        setEmailError("Please enter a valid email address");
+      } else if (!validateEmailDomain(form.email)) {
+        setEmailError("Allowed providers: Gmail, Outlook, Yahoo, iCloud, ProtonMail, AOL, Zoho");
+      } else {
+        setEmailError("");
+      }
     } else {
       setEmailError("");
     }
@@ -151,6 +179,7 @@ function AuthModal({ open, onClose, onAuthenticated }) {
         if (mode === "login") return "";
         if (form.email.trim() === "") return "Please enter a valid email address";
         if (!validateEmail(form.email)) return "Please enter a valid email address";
+        if (!validateEmailDomain(form.email)) return "Allowed providers: Gmail, Outlook, Yahoo, iCloud, ProtonMail, AOL, Zoho";
         return "";
       case "password":
         // Only show password required error in signup mode
@@ -179,6 +208,10 @@ function AuthModal({ open, onClose, onAuthenticated }) {
     }
     if (!validateEmail(form.email)) {
       setError("Please enter a valid email address");
+      return;
+    }
+    if (!validateEmailDomain(form.email)) {
+      setError("Registration is only allowed for trusted email providers (e.g. Gmail, Outlook, Yahoo, iCloud, ProtonMail)");
       return;
     }
     if (!isPasswordValid(passwordRules)) {
