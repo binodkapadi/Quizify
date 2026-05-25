@@ -4,16 +4,79 @@ import { getApiBaseUrl } from "../utils/api";
 
 // Validation helpers
 const ALLOWED_EMAIL_DOMAINS = [
+  // Google
   "gmail.com",
+  "googlemail.com",
+
+  // Microsoft
+  "microsoft.com",
   "outlook.com",
   "hotmail.com",
   "live.com",
+  "msn.com",
+
+  // Yahoo
   "yahoo.com",
+  "yahoo.co.in",
+  "yahoo.co.uk",
+  "ymail.com",
+
+  // Apple
   "icloud.com",
+  "me.com",
+  "mac.com",
+
+  // Proton
   "proton.me",
   "protonmail.com",
+
+  // AOL
   "aol.com",
+
+  // Zoho
   "zoho.com",
+  "zohomail.com",
+
+  // GMX
+  "gmx.com",
+  "gmx.net",
+
+  // Mail.com
+  "mail.com",
+
+  // Yandex
+  "yandex.com",
+  "yandex.ru",
+
+  // Fastmail
+  "fastmail.com",
+
+  // Tutanota
+  "tutanota.com",
+  "tutanota.de",
+
+  // Rediff
+  "rediffmail.com",
+
+  // Mail.ru
+  "mail.ru",
+
+  // QQ
+  "qq.com",
+
+  // Naver
+  "naver.com",
+
+  // Daum/Kakao
+  "daum.net",
+  "kakao.com",
+
+  // ISP/Regional
+  "cox.net",
+  "comcast.net",
+  "verizon.net",
+  "att.net",
+  "btinternet.com",
 ];
 
 const validateEmail = (email) => {
@@ -26,7 +89,13 @@ const validateEmailDomain = (email) => {
   const parts = email.split("@");
   if (parts.length < 2) return false;
   const domain = parts[parts.length - 1].toLowerCase();
-  return ALLOWED_EMAIL_DOMAINS.includes(domain);
+
+  // Check if domain is in the allowed list or is an educational domain
+  return (
+    ALLOWED_EMAIL_DOMAINS.includes(domain) ||
+    domain.endsWith(".edu") ||
+    domain.includes(".edu.")
+  );
 };
 
 const validatePassword = (password) => {
@@ -86,7 +155,7 @@ function AuthModal({ open, onClose, onAuthenticated }) {
   // Allow spaces in full name, but trim only at submit
   const setField = (key, value) => {
     if (key === "fullName") {
-      setForm((prev) => ({ ...prev, [key]: value })); 
+      setForm((prev) => ({ ...prev, [key]: value }));
     } else {
       setForm((prev) => ({ ...prev, [key]: value.trim() }));
     }
@@ -179,7 +248,7 @@ function AuthModal({ open, onClose, onAuthenticated }) {
         if (mode === "login") return "";
         if (form.email.trim() === "") return "Please enter a valid email address";
         if (!validateEmail(form.email)) return "Please enter a valid email address";
-        if (!validateEmailDomain(form.email)) return "Allowed providers: Gmail, Outlook, Yahoo, iCloud, ProtonMail, AOL, Zoho";
+        if (!validateEmailDomain(form.email)) return "Allowed providers: Gmail, Outlook, Microsoft, Yahoo, iCloud, ProtonMail, AOL, Zoho, Educational(.edu or .edu.)";
         return "";
       case "password":
         // Only show password required error in signup mode
@@ -211,7 +280,7 @@ function AuthModal({ open, onClose, onAuthenticated }) {
       return;
     }
     if (!validateEmailDomain(form.email)) {
-      setError("Registration is only allowed for trusted email providers (e.g. Gmail, Outlook, Yahoo, iCloud, ProtonMail)");
+      setError("Registration is only allowed for trusted email providers or educational domains (Gmail, Outlook, Microsoft, Yahoo, iCloud, ProtonMail, AOL, Zoho, .edu)");
       return;
     }
     if (!isPasswordValid(passwordRules)) {
@@ -244,13 +313,13 @@ function AuthModal({ open, onClose, onAuthenticated }) {
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.detail || "Failed to send OTP");
-      
+
       // Store debug OTP for development (remove in production!)
       if (data.debug_otp) {
         setDebugOtp(data.debug_otp);
         console.log("🔐 Development OTP:", data.debug_otp);
       }
-      
+
       // Move to OTP verification step
       setOtpStep("otp_sent");
       setSuccess(`OTP sent to ${form.email}. Check your email.`);
@@ -287,7 +356,7 @@ function AuthModal({ open, onClose, onAuthenticated }) {
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.detail || "OTP verification failed");
-      
+
       setSuccess("User successfully registered. Please sign in using your credentials.");
       setMode("login");
       setOtpStep("signup");
@@ -303,7 +372,7 @@ function AuthModal({ open, onClose, onAuthenticated }) {
 
   const handleResendOtp = async () => {
     if (resendTimer > 0) return;
-    
+
     setLoading(true);
     setError("");
     setSuccess("");
@@ -317,12 +386,12 @@ function AuthModal({ open, onClose, onAuthenticated }) {
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.detail || "Failed to resend OTP");
-      
+
       if (data.debug_otp) {
         setDebugOtp(data.debug_otp);
         console.log("🔐 New Development OTP:", data.debug_otp);
       }
-      
+
       setSuccess("New OTP sent to your email");
       setResendTimer(60);
       setOtpCode("");
