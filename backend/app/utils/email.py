@@ -77,7 +77,7 @@ Quizify Team
             <p>If you didn't create an account, please ignore this email.</p>
         </div>
         <div class="footer">
-            <p>© {datetime.now().year} Quizify. All rights reserved.</p>
+            <p>© {datetime.now().year} Quizify by Binod Kapadi. All rights reserved.</p>
         </div>
     </div>
 </body>
@@ -204,17 +204,29 @@ Quizify Team
         .content {{ background: #f9f9f9; padding: 30px; border-radius: 0 0 8px 8px; }}
         .otp-box {{ background: white; padding: 20px; text-align: center; border-radius: 8px; margin: 20px 0; }}
         .otp-code {{ font-size: 32px; font-weight: bold; color: #4F46E5; letter-spacing: 8px; }}
+        .footer {{ text-align: center; margin-top: 20px; font-size: 12px; color: #666; }}    
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header"><h1>Quizify</h1></div>
+        <div class="header">
+            <h1>Quizify</h1>
+        </div>
         <div class="content">
             <h2>Password Reset</h2>
             <p>Hi {full_name},</p>
             <p>Use the verification code below to reset your password:</p>
-            <div class="otp-box"><div class="otp-code">{otp_code}</div></div>
+            
+            <div class="otp-box">
+                <div class="otp-code">{otp_code}</div>
+            </div>
+            
             <p><strong>This code will expire in 10 minutes.</strong></p>
+            
+            <p>If you didn't request a password reset, please ignore this email.</p>
+        </div>
+        <div class="footer">
+            <p>© {datetime.now().year} Quizify by Binod Kapadi. All rights reserved.</p>
         </div>
     </div>
 </body>
@@ -299,4 +311,4 @@ Quizify Team
         return True
     except Exception as e:
         print(f"❌ Failed to send password reset OTP email to {recipient_email}: {str(e)}")
-        raise e
+        raise e
