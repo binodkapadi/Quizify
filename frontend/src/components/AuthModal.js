@@ -124,7 +124,7 @@ function AuthModal({ open, onClose, onAuthenticated }) {
       if (!validateEmail(form.email)) {
         setEmailError("Please enter a valid email address");
       } else if (!validateEmailDomain(form.email)) {
-        setEmailError("Allowed providers: Gmail, Outlook, Yahoo, iCloud, ProtonMail, AOL, Zoho");
+        setEmailError("Allowed providers: Gmail, Outlook, Microsoft, Yahoo, iCloud, ProtonMail, AOL, Zoho, Educational(.edu or .edu.)");
       } else {
         setEmailError("");
       }

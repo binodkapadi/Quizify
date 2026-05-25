@@ -151,22 +151,73 @@ def signup_send_otp(payload: SignupSendOtpRequest):
     
     # Validate email domain
     allowed_domains = {
+        # Google
         "gmail.com",
+        "googlemail.com",
+        # Microsoft
+        "microsoft.com",
         "outlook.com",
         "hotmail.com",
         "live.com",
+        "msn.com",
+        # Yahoo
         "yahoo.com",
+        "yahoo.co.in",
+        "yahoo.co.uk",
+        "ymail.com",
+        # Apple
         "icloud.com",
+        "me.com",
+        "mac.com",
+        # Proton
         "proton.me",
         "protonmail.com",
+        # AOL
         "aol.com",
+        # Zoho
         "zoho.com",
+        "zohomail.com",
+        # GMX
+        "gmx.com",
+        "gmx.net",
+        # Mail.com
+        "mail.com",
+        # Yandex
+        "yandex.com",
+        "yandex.ru",
+        # Fastmail
+        "fastmail.com",
+        # Tutanota
+        "tutanota.com",
+        "tutanota.de",
+        # Rediff
+        "rediffmail.com",
+        # Mail.ru
+        "mail.ru",
+        # QQ
+        "qq.com",
+        # Naver
+        "naver.com",
+        # Daum/Kakao
+        "daum.net",
+        "kakao.com",
+        # ISP/Regional
+        "cox.net",
+        "comcast.net",
+        "verizon.net",
+        "att.net",
+        "btinternet.com",
     }
     email_domain = email.split("@")[-1] if "@" in email else ""
-    if email_domain not in allowed_domains:
+    is_allowed = (
+        email_domain in allowed_domains or 
+        email_domain.endswith(".edu") or 
+        ".edu." in email_domain
+    )
+    if not is_allowed:
         raise HTTPException(
             status_code=400,
-            detail="Registration is only allowed for trusted email providers (e.g., Gmail, Outlook, Yahoo, iCloud, ProtonMail)."
+            detail="Registration is only allowed for trusted email providers or educational domains."
         )
     
     # Validate passwords match
