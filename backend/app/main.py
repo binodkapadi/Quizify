@@ -149,6 +149,26 @@ def signup_send_otp(payload: SignupSendOtpRequest):
     """
     email = payload.email.strip().lower()
     
+    # Validate email domain
+    allowed_domains = {
+        "gmail.com",
+        "outlook.com",
+        "hotmail.com",
+        "live.com",
+        "yahoo.com",
+        "icloud.com",
+        "proton.me",
+        "protonmail.com",
+        "aol.com",
+        "zoho.com",
+    }
+    email_domain = email.split("@")[-1] if "@" in email else ""
+    if email_domain not in allowed_domains:
+        raise HTTPException(
+            status_code=400,
+            detail="Registration is only allowed for trusted email providers (e.g., Gmail, Outlook, Yahoo, iCloud, ProtonMail)."
+        )
+    
     # Validate passwords match
     if payload.password != payload.confirm_password:
         raise HTTPException(status_code=400, detail="Passwords do not match")
