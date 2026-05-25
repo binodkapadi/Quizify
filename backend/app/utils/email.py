@@ -25,7 +25,7 @@ def send_otp_email(recipient_email: str, otp_code: str, full_name: str) -> bool:
     Returns:
         bool: True if email sent successfully, False otherwise
     """
-    RESEND_API_KEY = os.getenv("RESEND_API_KEY", "")
+    BREVO_API_KEY = os.getenv("BREVO_API_KEY", "")
     SENDER_EMAIL = os.getenv("SENDER_EMAIL") or os.getenv("SMTP_FROM") or os.getenv("SMTP_USER", "")
     SENDER_NAME = os.getenv("SENDER_NAME", "Quizify")
     
@@ -84,36 +84,39 @@ Quizify Team
 </html>
 """
 
-    # Check if Resend is configured
-    if RESEND_API_KEY:
+    # Check if Brevo is configured
+    if BREVO_API_KEY:
         try:
-            resend_from = os.getenv("RESEND_FROM_EMAIL") or "onboarding@resend.dev"
-            # If onboarding@resend.dev is used, we must use it directly as the sender address.
-            # (In Resend free tier, onboarding@resend.dev can only send to your own registered account email)
-            # If using a custom verified domain, we use f"{SENDER_NAME} <{SENDER_EMAIL}>"
-            sender = f"{SENDER_NAME} <{resend_from}>" if resend_from == "onboarding@resend.dev" else f"{SENDER_NAME} <{SENDER_EMAIL}>"
-            
             headers = {
-                "Authorization": f"Bearer {RESEND_API_KEY}",
+                "api-key": BREVO_API_KEY,
                 "Content-Type": "application/json",
+                "Accept": "application/json",
             }
             data = {
-                "from": sender,
-                "to": [recipient_email],
+                "sender": {
+                    "name": SENDER_NAME,
+                    "email": SENDER_EMAIL,
+                },
+                "to": [
+                    {
+                        "email": recipient_email,
+                        "name": full_name,
+                    }
+                ],
                 "subject": "Verify your email - Quizify OTP",
-                "html": html_content,
-                "text": text_content,
+                "htmlContent": html_content,
+                "textContent": text_content,
             }
-            response = requests.post("https://api.resend.com/emails", json=data, headers=headers, timeout=10)
+            response = requests.post("https://api.brevo.com/v3/smtp/email", json=data, headers=headers, timeout=10)
             if response.status_code in [200, 201, 202]:
-                print(f"✅ OTP email sent to {recipient_email} via Resend")
+                print(f"✅ OTP email sent to {recipient_email} via Brevo")
                 return True
             else:
-                error_msg = f"Resend API failed: {response.status_code} - {response.text}"
+                error_msg = f"Brevo API failed: {response.status_code} - {response.text}"
                 print(f"❌ {error_msg}")
                 raise RuntimeError(error_msg)
         except Exception as e:
-            print(f"❌ Failed to send OTP email via Resend to {recipient_email}: {str(e)}")
+            print(f"❌ Failed to send OTP email via Brevo to {recipient_email}: {str(e)}")
             raise e
 
     # Fallback to SMTP configuration from environment variables
@@ -126,7 +129,7 @@ Quizify Team
     # Check if SMTP is configured
     if not SMTP_HOST or not SMTP_USER or not SMTP_PASSWORD:
         raise ValueError(
-            "SMTP not configured and RESEND_API_KEY is missing. "
+            "SMTP not configured and BREVO_API_KEY is missing. "
             f"host_set={bool(SMTP_HOST)} user_set={bool(SMTP_USER)} password_set={bool(SMTP_PASSWORD)}."
         )
     
@@ -173,7 +176,7 @@ def send_password_reset_email(recipient_email: str, otp_code: str, full_name: st
     """
     Send password reset OTP email to the user.
     """
-    RESEND_API_KEY = os.getenv("RESEND_API_KEY", "")
+    BREVO_API_KEY = os.getenv("BREVO_API_KEY", "")
     SENDER_EMAIL = os.getenv("SENDER_EMAIL") or os.getenv("SMTP_FROM") or os.getenv("SMTP_USER", "")
     SENDER_NAME = os.getenv("SENDER_NAME", "Quizify")
 
@@ -218,33 +221,39 @@ Quizify Team
 </html>
 """
 
-    # Check if Resend is configured
-    if RESEND_API_KEY:
+    # Check if Brevo is configured
+    if BREVO_API_KEY:
         try:
-            resend_from = os.getenv("RESEND_FROM_EMAIL") or "onboarding@resend.dev"
-            sender = f"{SENDER_NAME} <{resend_from}>" if resend_from == "onboarding@resend.dev" else f"{SENDER_NAME} <{SENDER_EMAIL}>"
-            
             headers = {
-                "Authorization": f"Bearer {RESEND_API_KEY}",
+                "api-key": BREVO_API_KEY,
                 "Content-Type": "application/json",
+                "Accept": "application/json",
             }
             data = {
-                "from": sender,
-                "to": [recipient_email],
+                "sender": {
+                    "name": SENDER_NAME,
+                    "email": SENDER_EMAIL,
+                },
+                "to": [
+                    {
+                        "email": recipient_email,
+                        "name": full_name,
+                    }
+                ],
                 "subject": "Reset your password - Quizify OTP",
-                "html": html_content,
-                "text": text_content,
+                "htmlContent": html_content,
+                "textContent": text_content,
             }
-            response = requests.post("https://api.resend.com/emails", json=data, headers=headers, timeout=10)
+            response = requests.post("https://api.brevo.com/v3/smtp/email", json=data, headers=headers, timeout=10)
             if response.status_code in [200, 201, 202]:
-                print(f"✅ Password reset OTP email sent to {recipient_email} via Resend")
+                print(f"✅ Password reset OTP email sent to {recipient_email} via Brevo")
                 return True
             else:
-                error_msg = f"Resend API failed: {response.status_code} - {response.text}"
+                error_msg = f"Brevo API failed: {response.status_code} - {response.text}"
                 print(f"❌ {error_msg}")
                 raise RuntimeError(error_msg)
         except Exception as e:
-            print(f"❌ Failed to send password reset OTP email via Resend to {recipient_email}: {str(e)}")
+            print(f"❌ Failed to send password reset OTP email via Brevo to {recipient_email}: {str(e)}")
             raise e
 
     # Fallback to SMTP configuration from environment variables
@@ -256,7 +265,7 @@ Quizify Team
 
     if not SMTP_HOST or not SMTP_USER or not SMTP_PASSWORD:
         raise ValueError(
-            "SMTP not configured and RESEND_API_KEY is missing. "
+            "SMTP not configured and BREVO_API_KEY is missing. "
             f"host_set={bool(SMTP_HOST)} user_set={bool(SMTP_USER)} password_set={bool(SMTP_PASSWORD)}."
         )
 
