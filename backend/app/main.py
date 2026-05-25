@@ -174,9 +174,11 @@ def signup_send_otp(payload: SignupSendOtpRequest):
     )
     
     # Send OTP via email
-    email_sent = send_otp_email(email, otp_code, payload.full_name.strip())
-    
-    if not email_sent:
+    try:
+        email_sent = send_otp_email(email, otp_code, payload.full_name.strip())
+        if not email_sent:
+            raise RuntimeError("SMTP or Resend configuration failed to send.")
+    except Exception as e:
         if is_debug_otp_enabled():
             return {
                 "message": "OTP sent to your email",
@@ -185,8 +187,8 @@ def signup_send_otp(payload: SignupSendOtpRequest):
                 "expires_in": "10 minutes"
             }
         raise HTTPException(
-            status_code=503,
-            detail="Unable to send OTP email right now. Please try again in a moment."
+            status_code=400,
+            detail=f"Unable to send OTP email: {str(e)}"
         )
     
     return {
@@ -236,9 +238,11 @@ def signup_resend_otp(payload: ResendOtpRequest):
     create_otp_verification(email, full_name, password, new_otp)
     
     # Send new OTP via email
-    email_sent = send_otp_email(email, new_otp, full_name)
-    
-    if not email_sent:
+    try:
+        email_sent = send_otp_email(email, new_otp, full_name)
+        if not email_sent:
+            raise RuntimeError("SMTP or Resend configuration failed to send.")
+    except Exception as e:
         if is_debug_otp_enabled():
             return {
                 "message": "OTP resent to your email",
@@ -247,8 +251,8 @@ def signup_resend_otp(payload: ResendOtpRequest):
                 "expires_in": "10 minutes"
             }
         raise HTTPException(
-            status_code=503,
-            detail="Unable to send OTP email right now. Please try again in a moment."
+            status_code=400,
+            detail=f"Unable to send OTP email: {str(e)}"
         )
     
     return {
@@ -543,13 +547,16 @@ def request_password_reset(payload: PasswordResetRequest):
     token = create_password_reset_token(email)
     full_name = get_user_full_name_by_email(email)
 
-    email_sent = send_password_reset_email(email, token, full_name)
-    if not email_sent:
+    try:
+        email_sent = send_password_reset_email(email, token, full_name)
+        if not email_sent:
+            raise RuntimeError("SMTP or Resend configuration failed to send.")
+    except Exception as e:
         if is_debug_otp_enabled():
             return {"message": "Verification code sent to your email.", "debug_otp": token}
         raise HTTPException(
-            status_code=503,
-            detail="Unable to send verification code email right now. Please try again in a moment."
+            status_code=400,
+            detail=f"Unable to send verification code email: {str(e)}"
         )
     return {"message": "Verification code sent to your email."}
 

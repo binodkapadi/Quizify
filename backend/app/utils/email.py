@@ -109,11 +109,12 @@ Quizify Team
                 print(f"✅ OTP email sent to {recipient_email} via Resend")
                 return True
             else:
-                print(f"❌ Resend API failed: {response.status_code} - {response.text}")
-                return False
+                error_msg = f"Resend API failed: {response.status_code} - {response.text}"
+                print(f"❌ {error_msg}")
+                raise RuntimeError(error_msg)
         except Exception as e:
             print(f"❌ Failed to send OTP email via Resend to {recipient_email}: {str(e)}")
-            return False
+            raise e
 
     # Fallback to SMTP configuration from environment variables
     SMTP_HOST = os.getenv("SMTP_HOST", "")
@@ -124,12 +125,10 @@ Quizify Team
     
     # Check if SMTP is configured
     if not SMTP_HOST or not SMTP_USER or not SMTP_PASSWORD:
-        print(
-            "⚠️ SMTP not configured and RESEND_API_KEY is missing. "
-            f"host_set={bool(SMTP_HOST)} user_set={bool(SMTP_USER)} password_set={bool(SMTP_PASSWORD)}. "
-            f"OTP for {recipient_email}: {otp_code}"
+        raise ValueError(
+            "SMTP not configured and RESEND_API_KEY is missing. "
+            f"host_set={bool(SMTP_HOST)} user_set={bool(SMTP_USER)} password_set={bool(SMTP_PASSWORD)}."
         )
-        return False
     
     try:
         # Create email message
@@ -167,7 +166,7 @@ Quizify Team
         
     except Exception as e:
         print(f"❌ Failed to send OTP email to {recipient_email}: {str(e)}")
-        return False
+        raise e
 
 
 def send_password_reset_email(recipient_email: str, otp_code: str, full_name: str) -> bool:
@@ -241,11 +240,12 @@ Quizify Team
                 print(f"✅ Password reset OTP email sent to {recipient_email} via Resend")
                 return True
             else:
-                print(f"❌ Resend API failed: {response.status_code} - {response.text}")
-                return False
+                error_msg = f"Resend API failed: {response.status_code} - {response.text}"
+                print(f"❌ {error_msg}")
+                raise RuntimeError(error_msg)
         except Exception as e:
             print(f"❌ Failed to send password reset OTP email via Resend to {recipient_email}: {str(e)}")
-            return False
+            raise e
 
     # Fallback to SMTP configuration from environment variables
     SMTP_HOST = os.getenv("SMTP_HOST", "")
@@ -255,12 +255,10 @@ Quizify Team
     SMTP_SECURE = os.getenv("SMTP_SECURE", "")
 
     if not SMTP_HOST or not SMTP_USER or not SMTP_PASSWORD:
-        print(
-            "⚠️ SMTP not configured and RESEND_API_KEY is missing. "
-            f"host_set={bool(SMTP_HOST)} user_set={bool(SMTP_USER)} password_set={bool(SMTP_PASSWORD)}. "
-            f"Password reset OTP for {recipient_email}: {otp_code}"
+        raise ValueError(
+            "SMTP not configured and RESEND_API_KEY is missing. "
+            f"host_set={bool(SMTP_HOST)} user_set={bool(SMTP_USER)} password_set={bool(SMTP_PASSWORD)}."
         )
-        return False
 
     try:
         message = MIMEMultipart("alternative")
@@ -292,4 +290,4 @@ Quizify Team
         return True
     except Exception as e:
         print(f"❌ Failed to send password reset OTP email to {recipient_email}: {str(e)}")
-        return False
+        raise e
