@@ -19,14 +19,35 @@ npm = node package manager
 
 npx = node package executer
 
-Step 1: Setup Folder Structure
+Step 1. Install Required Software
+
+a) Install Node.js
+
+Download and install Node.js:
+Offical Website: https://nodejs.org/en/download/
+
+Verify installation [open command prompt in windows]:
+    
+    node -v
+    npm -v
+
+b) Install Python:
+
+Download and install from:
+offical website: https://www.python.org/downloads/
+
+Verify installation[Open command Prompt in Windows]:
+  
+    python --version
+
+Step 2: Setup Folder Structure
 
 Open VS Code and create a new folder:
 
     mkdir QuizGenerator
     cd QuizGenerator
 
-A) Backend Setup (FastAPI + Python)
+A) Backend Setup (FastAPI + Python) [Same Terminal]
 
     mkdir backend
     cd backend
@@ -63,7 +84,7 @@ In .env file
     MONGODB_DB_NAME=your_database_name
 
 
-B) Frontend Setup (React)
+B) Frontend Setup (React) [New Terminal]
 
      mkdir frontend
      cd frontend
@@ -89,6 +110,7 @@ For Pdf Creation and download
 
 In separate terminals:
 
+
 Backend:
 
     cd backend
@@ -99,10 +121,12 @@ or if you don't make app folder inside the backend folder where main.py file is 
 
      uvicorn main:app --reload
 
+
 Frontend:
 
     cd frontend
     npm start
+
 
 
 ## Pushing code to GitHub repository 
