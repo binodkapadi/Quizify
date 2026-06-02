@@ -33,7 +33,7 @@ A) Backend Setup (FastAPI + Python)
     python -m venv venv
     venv\Scripts\activate 
 
-Install Dependencies
+Install Dependencies(First Put all dependencies in requirements.txt file that you want to install then only run below command)
 
      pip install -r requirements.txt
 
