@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.utils.llm import generate_quiz_from_notes
 from typing import List
 from app.utils.file_extractor import extract_text_from_files
-import random  #  added to generate random seed
+import random 
 from pydantic import BaseModel
 import secrets
 import os
@@ -82,7 +82,7 @@ origins = [
 #  Allow frontend access
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,  # Replace with your frontend URL in production
+    allow_origins=origins,
     allow_origin_regex=r"^http://(localhost|127\.0\.0\.1|192\.168\.\d+\.\d+):\d+$",
     allow_credentials=True,
     allow_methods=["*"],
