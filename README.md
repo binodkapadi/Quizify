@@ -281,6 +281,8 @@ b) Run:
 ### For Adding Readme file to github :
 
    git add README.md
+   git commit -m "Updated Readme file"
+   git push origin main
 
 
 
@@ -353,8 +355,10 @@ In your project folder, run:
 
 
 --rebase makes sure your local commits are applied on top of the latest remote commits (cleaner history).
-If you get any merge conflicts, Git will tell you — fix them manually, 
+If step 1 (succesful) the directly do step 2.
 
+Else
+If you get any merge conflicts, Git will tell you — fix them manually, 
 then run:
 
     git add .
