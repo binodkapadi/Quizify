@@ -280,9 +280,9 @@ b) Run:
 
 ### For Adding Readme file to github :
 
-   git add README.md
-   git commit -m "Updated Readme file"
-   git push origin main
+    git add README.md
+    git commit -m "Updated Readme file"
+    git push origin main
 
 
 
