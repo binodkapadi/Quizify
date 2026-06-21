@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 from urllib.parse import quote
 from email.utils import parsedate_to_datetime
 from dotenv import load_dotenv
-import google.generativeai as genai
+from google import genai
 import requests
 
 load_dotenv()
@@ -16,7 +16,7 @@ if not GOOGLE_API_KEY:
     raise ValueError("❌ GOOGLE_API_KEY not found in .env file")
 
 # Configure Gemini
-genai.configure(api_key=GOOGLE_API_KEY)
+client = genai.Client(api_key=GOOGLE_API_KEY)
 
 
 def _strip_html(value: str) -> str:
@@ -268,8 +268,10 @@ def generate_quiz_from_notes(
 
 
     try:
-        model_instance = genai.GenerativeModel(model)
-        response = model_instance.generate_content(prompt)
+        response = client.models.generate_content(
+            model=model,
+            contents=prompt
+        )
 
         text = response.text.strip()
         match = re.search(r'\[.*\]', text, re.DOTALL)
