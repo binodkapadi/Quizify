@@ -60,7 +60,13 @@ def init_auth_db():
     db.sessions.create_index([("token", ASCENDING)], unique=True)
     db.oauth_states.create_index([("state", ASCENDING)], unique=True)
     db.password_reset_tokens.create_index([("token", ASCENDING)], unique=True)
+    # TTL Index: Auto-delete tokens 10 minutes (600 seconds) after creation
+    db.password_reset_tokens.create_index([("created_at", ASCENDING)], expireAfterSeconds=600)
+    
     db.otp_verification.create_index([("email", ASCENDING), ("created_at", DESCENDING)])
+    # TTL Index: Auto-delete OTPs 10 minutes (600 seconds) after creation
+    db.otp_verification.create_index([("created_at", ASCENDING)], expireAfterSeconds=600)
+    
     db.quiz_attempts.create_index([("user_id", ASCENDING), ("created_at", DESCENDING)])
 
 
@@ -176,7 +182,7 @@ def create_password_reset_token(email: str, ttl_minutes: int = 10) -> str:
             "token": token,
             "expires_at": str(expires_at),
             "used": 0,
-            "created_at": now.isoformat(),
+            "created_at": now,  # Stored as datetime object for TTL index to work
         }
     )
     return token
@@ -205,7 +211,8 @@ def reset_password_with_token(token: str, new_password: str):
 
     email = str(row.get("email", "")).strip().lower()
     db.users.update_one({"email": email}, {"$set": {"password_hash": hash_password(new_password)}})
-    db.password_reset_tokens.update_many({"token": token}, {"$set": {"used": 1}})
+    # Delete the reset token immediately upon successful use
+    db.password_reset_tokens.delete_many({"token": token})
 
 
 def get_current_user_by_auth_header(authorization: str):
@@ -239,7 +246,7 @@ def create_otp_verification(email: str, full_name: str, password: str, otp_code:
             "password_hash": password,
             "expires_at": str(expires_at),
             "verified": 0,
-            "created_at": now.isoformat(),
+            "created_at": now,  # Stored as datetime object for TTL index to work
         }
     )
     return otp_code
@@ -295,8 +302,8 @@ def verify_otp_and_create_user(email: str, otp_code: str) -> dict:
     result = db.users.insert_one(user_doc)
     user_id = str(result.inserted_id)
     token = create_session_for_user(user_id)
-    db.otp_verification.update_many({"email": email}, {"$set": {"verified": 1}})
-    db.otp_verification.delete_many({"email": email, "verified": 1})
+    # Delete the OTP immediately upon successful use
+    db.otp_verification.delete_many({"email": email})
 
     user = db.users.find_one({"_id": _parse_object_id(user_id)})
     return {"token": token, "user": build_user_payload(user)}
