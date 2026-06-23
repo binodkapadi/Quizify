@@ -171,6 +171,16 @@ After completing your work:
 
     deactivate
 
+### If you want to come back from the folder
+    
+    cd ..
+
+eg=>
+
+PS C:\Users\binod\OneDrive - ioepc.edu.np\Desktop\QuizGenerator\frontend> cd ..
+
+PS C:\Users\binod\OneDrive - ioepc.edu.np\Desktop\QuizGenerator>
+
 ## Pushing code to GitHub repository 
 
 1) Create new repository in GitHub manually (Just Name the GitHub repository) Do not add readme file, gitignore file, liscence fle initially.
