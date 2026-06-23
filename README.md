@@ -87,7 +87,7 @@ First put all required dependencies inside requirements.txt file and then run:
 
 ### For Production environment Variables (Put these all inside Render environment variable)
 
-    #If you have hosted frontend  in platfrom (like vercel) then put it in render env variable.
+    #If you have hosted frontend  in platform (like vercel) then put it in render env variable.
     FRONTEND_URL=your_frontend_vercel_url
 
     GOOGLE_API_KEY=your_gemanai_api_key_here
