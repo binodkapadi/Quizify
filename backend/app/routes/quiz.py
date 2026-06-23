@@ -14,7 +14,7 @@ async def generate_quiz(request: QuizRequest):
     quiz = generate_quiz_from_notes(
         notes=request.notes,
         difficulty=request.difficulty,
-        model_name=request.model
+        model=request.model
     )
 
     if not quiz:

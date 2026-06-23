@@ -6,14 +6,14 @@ function NotesInput({ onGenerate, isAuthenticated, onRequireAuth }) {
   const apiBaseUrl = getApiBaseUrl();
   const [notes, setNotes] = useState("");
   const [difficulty, setDifficulty] = useState("Easy");
-  const [model, setModel] = useState("gemini-flash-latest");
+  const [model, setModel] = useState("gemini-flash-lite-latest");
   const [numQuestions, setNumQuestions] = useState(5);
   const [language, setLanguage] = useState("English");
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState("");
-  const [manualMode, setManualMode] = useState(false); 
-  const [fileNotes, setFileNotes] = useState(""); 
+  const [manualMode, setManualMode] = useState(false);
+  const [fileNotes, setFileNotes] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -43,13 +43,13 @@ function NotesInput({ onGenerate, isAuthenticated, onRequireAuth }) {
     }
     const files = Array.from(e.target.files || []);
     if (!files.length) return;
-  
+
     // Prevent selecting files when user is in manual typing mode
     if (manualMode) return;
-  
+
     // 50 MB limit (in bytes)
     const MAX_SIZE = 50 * 1024 * 1024;
-  
+
     // Check each file
     for (const file of files) {
       if (file.size > MAX_SIZE) {
@@ -59,14 +59,14 @@ function NotesInput({ onGenerate, isAuthenticated, onRequireAuth }) {
         return; // Stop further processing
       }
     }
-  
+
     setUploading(true);
     setUploadError("");
-  
+
     try {
       const formData = new FormData();
       files.forEach((file) => formData.append("files", file));
-  
+
       const response = await fetch(
         `${apiBaseUrl}/extract-notes`,
         {
@@ -74,7 +74,7 @@ function NotesInput({ onGenerate, isAuthenticated, onRequireAuth }) {
           body: formData,
         }
       );
-  
+
       const data = await response.json();
       if (data.text && data.text.trim()) {
         setFileNotes(data.text);
@@ -86,7 +86,7 @@ function NotesInput({ onGenerate, isAuthenticated, onRequireAuth }) {
         setManualMode(false);
         setUploadError(
           data.warning ||
-            "Unable to read text from the uploaded files. Please try another file."
+          "Unable to read text from the uploaded files. Please try another file."
         );
       }
     } catch (err) {
@@ -95,7 +95,7 @@ function NotesInput({ onGenerate, isAuthenticated, onRequireAuth }) {
     } finally {
       setUploading(false);
     }
-  };  
+  };
 
   const handleClearFiles = () => {
     setUploadedFiles([]);
@@ -224,15 +224,14 @@ function NotesInput({ onGenerate, isAuthenticated, onRequireAuth }) {
             onChange={(e) => setModel(e.target.value)}
             disabled={isDisabled}
           >
-            <option value="gemini-flash-latest">Gemini Flash Latest</option>
             <option value="gemini-flash-lite-latest">Gemini Flash-Lite Latest</option>
-            <option value="gemini-pro-latest">Gemini Pro Latest</option>
+            <option value="gemini-flash-latest">Gemini Flash Latest</option>
+            <option value="gemini-3.1-flash-lite">Gemini 3.1 Flash-Lite</option>
             <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
             <option value="gemini-2.5-pro">Gemini 2.5 Pro</option>
             <option value="gemini-2.5-flash-lite">Gemini 2.5 Flash-Lite</option>
             <option value="gemini-3.5-flash">Gemini 3.5 Flash</option>
             <option value="gemini-3.1-pro-preview">Gemini 3.1 Pro (Preview)</option>
-            <option value="gemini-3.1-flash-lite">Gemini 3.1 Flash-Lite</option>
           </select>
         </div>
 
