@@ -51,14 +51,19 @@ Open VS Code Terminal and create a new folder:
     python -m venv venv
     venv\Scripts\activate 
 
--------First of all Inside backend folder create requirements.txt file and .env file----------
+First of all, inside the backend folder create:
+
+* requirements.txt
+* .env
+
+#### Install Dependencies
+
+First put all required dependencies inside requirements.txt file and then run:
+
+    pip install -r requirements.txt
 
 
-Install Dependencies(First Put all dependencies in requirements.txt file that you want to install then only run below command)
-
-     pip install -r requirements.txt
-
-In .env file
+### Configure Environment Variables (.env) (Local Host Setup)
 
     GOOGLE_API_KEY=your_gemanai_api_key_here
 
@@ -74,85 +79,69 @@ In .env file
     MONGODB_URI=your_mongodb_uri
     MONGODB_DB_NAME=your_database_name
 
-    # For Local Environment
-
     SMTP_HOST=smtp.gmail.com
     SMTP_PORT=587
     SMTP_USER=your_email@gmail.com
     SMTP_PASSWORD=your_app_password
     SMTP_FROM=your_email@gmail.com
 
-    #For Production Only
+### For Production environment Variables (Put these all inside Render environment variable)
+
+    #If you have hosted frontend  in platfrom (like vercel) then put it in render env variable.
+    FRONTEND_URL=your_frontend_vercel_url
+
+    GOOGLE_API_KEY=your_gemanai_api_key_here
+
+    GOOGLE_CLIENT_ID=your_google_client_id
+    GOOGLE_CLIENT_SECRET=your_google_client_secret
+
+    GITHUB_CLIENT_ID=your_github_client_id
+    GITHUB_CLIENT_SECRET=your_github_client_secret
+
+    LINKEDIN_CLIENT_ID=your_linkedin_client_id
+    LINKEDIN_CLIENT_SECRET=your_linkedin_client_secret
+
+    MONGODB_URI=your_mongodb_uri
+    MONGODB_DB_NAME=your_database_name
+
     # Brevo Email API Config (Required/Recommended for Render Free Tier to bypass SMTP port blocking)
     
-    # BREVO_API_KEY=your_brevo_api_key_here
-    # SENDER_EMAIL=your_email@gmail.com
-    # SENDER_NAME = Quizify
+    BREVO_API_KEY=your_brevo_api_key_here
+    SENDER_EMAIL=your_email@gmail.com
+    SENDER_NAME = Quizify
 
 
-### B) Frontend Setup (React) [New Terminal]
+### B) Frontend Setup (React) [Open New Terminal]
 
-     mkdir frontend
-     cd frontend
-     npx create-react-app .
+    mkdir frontend
+    cd frontend
+    npx create-react-app .
 
 Install dependencies
 
-     npm install axios
-
-#### ---------create .env file inside frontend folder------------------
-
-In .env file add
-
-     REACT_APP_API_URL=http://127.0.0.1:8000
-     
-
-     [Leave as it for Locally Running.Do not Include]
-     #put it inside frontend hosted platform like vercel or netlify or any other env variables also.
-
-     #REACT_APP_API_URL=Your_Production_URL (Production URL if you want run locally leave as it is it will not effect your code.)
-
+    npm install axios
 
 For Pdf Creation and download
 
-     npm install jspdf
+    npm install jspdf
 
-## Inside Backend (main.py) file[If you are running locally]then
-Replace a portion of code in that file[line 69-80].
+#### create .env file inside frontend folder
 
-    def get_frontend_url() -> str:
-        return (os.getenv("FRONTEND_URL") or "http://localhost:3000").rstrip("/")
+Frontend .env Configuration
 
-    init_auth_db()
+Local Backend url
 
-    def get_current_user(authorization: str = Header(default="")):
-        return get_current_user_by_auth_header(authorization)
+    REACT_APP_API_URL=http://127.0.0.1:8000
 
-    origins = [
-      "http://localhost:3000",
-    ]
 
-## In production level[while hosting]then
-Replace a portion of code in that file[line 69-80].
+For Production only(Replace local backend url and put production backend url while pushing code to github only then after succesful pushing put local url back)
 
-    def get_frontend_url() -> str:
-        return (os.getenv("FRONTEND_URL") or "http://localhost:3000").rstrip("/")
-
-    init_auth_db()
-
-    def get_current_user(authorization: str = Header(default="")):
-        return get_current_user_by_auth_header(authorization)
-
-    origins = [
-      "Your_Frontend_url(vercel or netlify or any other)",
-      "http://localhost:3000",
-    ]
+    REACT_APP_API_URL=Your_Production_URL
 
 
 ## -----------------Run Locally----------------------------
 
 In separate terminals:
-
 
 Backend:
 
@@ -162,7 +151,7 @@ Backend:
 
 or if you don't make app folder inside the backend folder where main.py file is present the you can simply run backend by using.
 
-     uvicorn main:app --reload
+    uvicorn main:app --reload
 
 
 Frontend:
@@ -170,7 +159,17 @@ Frontend:
     cd frontend
     npm start
 
+### STOP APPLICATION
 
+To stop the [Frontend and Backend] server:
+
+    CTRL + C
+
+### DEACTIVATE VIRTUAL ENVIRONMENT
+
+After completing your work:
+
+    deactivate
 
 ## Pushing code to GitHub repository 
 

@@ -74,10 +74,14 @@ init_auth_db()
 def get_current_user(authorization: str = Header(default="")):
     return get_current_user_by_auth_header(authorization)
 
+frontend_url = os.getenv("FRONTEND_URL")
+
 origins = [
-  "https://binodkapadiquizify.vercel.app",
   "http://localhost:3000",
 ]
+
+if frontend_url:
+    origins.append(frontend_url.rstrip("/"))
 
 #  Allow frontend access
 app.add_middleware(
