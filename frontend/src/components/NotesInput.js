@@ -166,6 +166,12 @@ function NotesInput({ onGenerate, isAuthenticated, onRequireAuth }) {
             type="file"
             multiple
             accept=".pdf,.doc,.docx,.ppt,.pptx,.txt,.png,.jpg,.jpeg"
+            onClick={(e) => {
+              if (!isAuthenticated) {
+                e.preventDefault();
+                onRequireAuth();
+              }
+            }}
             onChange={handleFileChange}
             disabled={uploadDisabled || uploading}
           />
@@ -219,14 +225,14 @@ function NotesInput({ onGenerate, isAuthenticated, onRequireAuth }) {
             disabled={isDisabled}
           >
             <option value="gemini-flash-latest">Gemini Flash Latest</option>
-            <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
-            <option value="gemini-2.5-flash-lite-preview-09-2025">Gemini 2.5 Flash-Lite Preview</option>
-            <option value="gemini-2.0-flash-lite">Gemini 2.0 Flash-Lite</option>
             <option value="gemini-flash-lite-latest">Gemini Flash-Lite Latest</option>
+            <option value="gemini-pro-latest">Gemini Pro Latest</option>
+            <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
             <option value="gemini-2.5-pro">Gemini 2.5 Pro</option>
             <option value="gemini-2.5-flash-lite">Gemini 2.5 Flash-Lite</option>
-            <option value="gemini-2.5-flash-preview-09-2025">Gemini 2.5 Flash Preview</option>
-            <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
+            <option value="gemini-3.5-flash">Gemini 3.5 Flash</option>
+            <option value="gemini-3.1-pro-preview">Gemini 3.1 Pro (Preview)</option>
+            <option value="gemini-3.1-flash-lite">Gemini 3.1 Flash-Lite</option>
           </select>
         </div>
 

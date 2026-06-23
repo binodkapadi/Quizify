@@ -33,10 +33,14 @@ function App() {
     if (!localStorage.getItem("auth_token")) return;
     try {
       const response = await authedFetch("/auth/me");
-      const data = await response.json();
       if (response.ok) {
+        const data = await response.json();
         setUser(data.user || null);
         setHistory(data.history || []);
+      } else {
+        localStorage.removeItem("auth_token");
+        setUser(null);
+        setHistory([]);
       }
     } catch (_err) {
       localStorage.removeItem("auth_token");
