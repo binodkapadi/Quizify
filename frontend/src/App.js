@@ -17,6 +17,7 @@ function App() {
   const [showProfile, setShowProfile] = useState(false);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [notesInputKey, setNotesInputKey] = useState(0);
+  const [photoError, setPhotoError] = useState("");
   const profileMenuRef = useRef(null);
 
   const authToken = localStorage.getItem("auth_token");
@@ -163,6 +164,14 @@ function App() {
   const handlePhotoUpload = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    if (file.size > 1024 * 1024) {
+      setPhotoError("Please upload photo less than 1MB");
+      return;
+    } else {
+      setPhotoError("");
+    }
+
     const reader = new FileReader();
     reader.onload = async () => {
       try {
@@ -190,6 +199,7 @@ function App() {
     setSubmitted(false);
     setScore(0);
     setAnswers({});
+    setPhotoError("");
     setNotesInputKey((k) => k + 1);
     window.history.replaceState({}, "", "/");
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -244,6 +254,7 @@ function App() {
                     {showLeaderboard ? "Overview" : "Leaderboard"}
                   </button>
                 </div>
+                {photoError && <div style={{ color: "red", marginTop: "8px", fontSize: "13px", textAlign: "center" }}>{photoError}</div>}
 
                 {!showLeaderboard ? (
                   <>
