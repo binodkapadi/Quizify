@@ -2,6 +2,13 @@ import hashlib
 import os
 import secrets
 from datetime import datetime
+import base64
+from io import BytesIO
+
+try:
+    from PIL import Image
+except ImportError:
+    Image = None
 
 import certifi
 from bson import ObjectId
@@ -152,7 +159,7 @@ def upsert_oauth_user(email: str, full_name: str, profile_photo: str | None = No
         "full_name": full_name,
         "email": email,
         "password_hash": hash_password(random_pw),
-        "profile_photo": profile_photo,
+        "profile_photo": profile_photo or "",
         "total_points": 0,
         "quizzes_generated": 0,
         "quizzes_submitted": 0,
@@ -292,7 +299,7 @@ def verify_otp_and_create_user(email: str, otp_code: str) -> dict:
         "full_name": full_name,
         "email": email,
         "password_hash": password_hash,
-        "profile_photo": None,
+        "profile_photo": "",
         "total_points": 0,
         "quizzes_generated": 0,
         "quizzes_submitted": 0,
@@ -335,6 +342,37 @@ def get_user_history(user_id: str, limit: int = 30):
 def update_profile_photo(user_id: str, photo_data: str):
     db = get_db_conn()
     _id = _parse_object_id(user_id)
+    
+    # Backend Defense: Resize and compress image down to ~15KB JPEG
+    if Image and photo_data and photo_data.startswith("data:image"):
+        try:
+            # Extract the base64 part
+            header, encoded = photo_data.split(",", 1)
+            
+            # Decode base64 to bytes
+            img_data = base64.b64decode(encoded)
+            
+            # Open image with Pillow
+            img = Image.open(BytesIO(img_data))
+            
+            # Convert to RGB (required for JPEG)
+            if img.mode in ("RGBA", "P"):
+                img = img.convert("RGB")
+                
+            # Resize image to a small avatar size
+            img.thumbnail((250, 250), Image.Resampling.LANCZOS)
+            
+            # Save compressed image to BytesIO
+            output = BytesIO()
+            img.save(output, format="JPEG", quality=70, optimize=True)
+            compressed_data = output.getvalue()
+            
+            # Encode back to base64
+            compressed_b64 = base64.b64encode(compressed_data).decode("utf-8")
+            photo_data = f"data:image/jpeg;base64,{compressed_b64}"
+        except Exception as e:
+            print(f"Error compressing profile photo: {e}")
+
     db.users.update_one({"_id": _id}, {"$set": {"profile_photo": photo_data}})
     return db.users.find_one({"_id": _id})
 
